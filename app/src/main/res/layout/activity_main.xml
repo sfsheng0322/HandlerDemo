@@ -20,7 +20,7 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:max="100"/>
 
     <LinearLayout
@@ -35,9 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
-            android:onClick="sendMsg"
+            android:onClick="Click1"
             android:padding="10dp"
-            android:text="SEND"
+            android:text="按钮1"
             android:textSize="18sp"/>
 
         <Button
@@ -45,9 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
-            android:onClick="postMsg"
+            android:onClick="Click2"
             android:padding="10dp"
-            android:text="POST"
+            android:text="按钮2"
             android:textSize="18sp"/>
     </LinearLayout>
 
