@@ -23,6 +23,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Android 基础核心之 Handler
+ *
+ * apk url: https://github.com/sfsheng0322/HandlerDemo/blob/master/StickyHeaderListView.apk?raw=true
+ */
 public class MainActivity extends AppCompatActivity {
 
     private TextView tvTip;
@@ -138,14 +143,15 @@ public class MainActivity extends AppCompatActivity {
             Log.d("--->", "ThreadC run() mHandler Thread Name: " + mHandler.getLooper().getThread().getName());
 
             sendMsg(0, "我来自ThreadC");
-
             Looper.loop();
         }
     }
 
     private void downloadApkFile() {
+        String url = "https://github.com/sfsheng0322/HandlerDemo/blob/master/StickyHeaderListView.apk?raw=true";
         OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.newCall(new Request.Builder().url("http://fir.im/StickyListView").build()).enqueue(new Callback() {
+        Call call = okHttpClient.newCall(new Request.Builder().url(url).build());
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Toast.makeText(MainActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
@@ -153,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d("--->", "downloadApk() onResponse() Thread Name: " + Thread.currentThread().getName());
                 try {
                     saveApkFile(response);
                 } catch (Exception e) {
@@ -175,12 +180,12 @@ public class MainActivity extends AppCompatActivity {
             fos.write(buf, 0, len);
             sum += len;
             int progress = (int) (sum * 1.0f / total * 100);
-            sendMsg(progress, "真实下载操作: " + progress);
-            Thread.sleep(10);
+            sendMsg(progress, "真实下载操作: " + progress + "%");
         }
         fos.flush();
         is.close();
         fos.close();
+        ApkUtil.install(getApplicationContext(), apkFile.getPath());
     }
 
     private void sendMsg(int size, String tip) {

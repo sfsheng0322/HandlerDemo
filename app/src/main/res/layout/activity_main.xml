@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="模拟下载操作"/>
+        android:text="下载操作提示"/>
 
     <ProgressBar
         android:id="@+id/progressbar"
@@ -37,8 +37,8 @@
             android:layout_weight="1"
             android:onClick="ClickA"
             android:padding="10dp"
-            android:text="按钮A"
-            android:textSize="18sp"/>
+            android:text="模拟下载A"
+            android:textSize="16sp"/>
 
         <Button
             android:layout_width="match_parent"
@@ -47,8 +47,8 @@
             android:layout_weight="1"
             android:onClick="ClickB"
             android:padding="10dp"
-            android:text="按钮B"
-            android:textSize="18sp"/>
+            android:text="模拟下载B"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -65,8 +65,8 @@
             android:layout_weight="1"
             android:onClick="ClickC"
             android:padding="10dp"
-            android:text="按钮C"
-            android:textSize="18sp"/>
+            android:text="线程C"
+            android:textSize="16sp"/>
 
         <Button
             android:layout_width="match_parent"
@@ -75,8 +75,8 @@
             android:layout_weight="1"
             android:onClick="ClickD"
             android:padding="10dp"
-            android:text="按钮D"
-            android:textSize="18sp"/>
+            android:text="真实下载D"
+            android:textSize="16sp"/>
     </LinearLayout>
 
 </LinearLayout>
