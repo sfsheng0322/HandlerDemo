@@ -35,9 +35,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
-            android:onClick="Click1"
+            android:onClick="ClickA"
             android:padding="10dp"
-            android:text="按钮1"
+            android:text="按钮A"
             android:textSize="18sp"/>
 
         <Button
@@ -45,9 +45,37 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
-            android:onClick="Click2"
+            android:onClick="ClickB"
             android:padding="10dp"
-            android:text="按钮2"
+            android:text="按钮B"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_tip"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:onClick="ClickC"
+            android:padding="10dp"
+            android:text="按钮C"
+            android:textSize="18sp"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="1"
+            android:onClick="ClickD"
+            android:padding="10dp"
+            android:text="按钮D"
             android:textSize="18sp"/>
     </LinearLayout>
 

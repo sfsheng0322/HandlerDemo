@@ -1,6 +1,7 @@
 package com.imooc.coding.handler;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -9,6 +10,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            tvTip.setText("SEND方式更新UI: " + msg.arg1 + "%");
+            String tip = (String) msg.obj;
+            tvTip.setText(tip);
             progressBar.setProgress(msg.arg1);
         }
     };
@@ -37,12 +51,20 @@ public class MainActivity extends AppCompatActivity {
         Log.d("--->", "onCreate() mHandler Thread Name: " + mHandler.getLooper().getThread().getName());
     }
 
-    public void Click1(View v) {
+    public void ClickA(View v) {
         new ThreadA().start();
     }
 
-    public void Click2(View v) {
+    public void ClickB(View v) {
+        new ThreadB().start();
+    }
+
+    public void ClickC(View v) {
         new ThreadC().start();
+    }
+
+    public void ClickD(View v) {
+        downloadApkFile();
     }
 
     class ThreadA extends Thread {
@@ -60,10 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                Message msg = Message.obtain();
-                msg.arg1 = count;
-                mHandler.sendMessage(msg);
+                sendMsg(count, "SEND方式模拟下载进度: " + count + "%");
             }
         }
     }
@@ -87,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        tvTip.setText("POST方式更新UI: " + count + "%");
+                        tvTip.setText("POST方式模拟下载进度: " + count + "%");
                         progressBar.setProgress(count);
                     }
                 });
@@ -118,11 +137,56 @@ public class MainActivity extends AppCompatActivity {
             Log.d("--->", "ThreadC run() myLooper() Thread Name: " + Looper.myLooper().getThread().getName());
             Log.d("--->", "ThreadC run() mHandler Thread Name: " + mHandler.getLooper().getThread().getName());
 
-            Message msg = Message.obtain();
-            msg.obj = "我来自ThreadC";
-            mHandler.sendMessage(msg);
+            sendMsg(0, "我来自ThreadC");
 
             Looper.loop();
         }
+    }
+
+    private void downloadApkFile() {
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(new Request.Builder().url("http://fir.im/StickyListView").build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(MainActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d("--->", "downloadApk() onResponse() Thread Name: " + Thread.currentThread().getName());
+                try {
+                    saveApkFile(response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void saveApkFile(Response response) throws Exception {
+        byte[] buf = new byte[2048];
+        long sum = 0;
+        int len = 0;
+        long total = response.body().contentLength();
+        InputStream is = response.body().byteStream();
+        File apkFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Demo.apk");
+        FileOutputStream fos = new FileOutputStream(apkFile);
+        while ((len = is.read(buf)) != -1) {
+            fos.write(buf, 0, len);
+            sum += len;
+            int progress = (int) (sum * 1.0f / total * 100);
+            sendMsg(progress, "真实下载操作: " + progress);
+            Thread.sleep(10);
+        }
+        fos.flush();
+        is.close();
+        fos.close();
+    }
+
+    private void sendMsg(int size, String tip) {
+        Message msg = mHandler.obtainMessage();
+        msg.arg1 = size;
+        msg.obj = tip;
+        mHandler.sendMessage(msg);
     }
 }
