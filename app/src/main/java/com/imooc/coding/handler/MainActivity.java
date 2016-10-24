@@ -10,15 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -142,30 +139,30 @@ public class MainActivity extends AppCompatActivity {
             Log.d("--->", "ThreadC run() myLooper() Thread Name: " + Looper.myLooper().getThread().getName());
             Log.d("--->", "ThreadC run() mHandler Thread Name: " + mHandler.getLooper().getThread().getName());
 
-            sendMsg(0, "我来自ThreadC");
+            sendMsg("我来自ThreadC");
             Looper.loop();
         }
     }
 
     private void downloadApkFile() {
-        String url = "https://github.com/sfsheng0322/HandlerDemo/blob/master/StickyHeaderListView.apk?raw=true";
-        OkHttpClient okHttpClient = new OkHttpClient();
-        Call call = okHttpClient.newCall(new Request.Builder().url(url).build());
-        call.enqueue(new Callback() {
+        new Thread(new Runnable() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                Toast.makeText(MainActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void run() {
                 try {
-                    saveApkFile(response);
+                    String url = "https://github.com/sfsheng0322/HandlerDemo/blob/master/StickyHeaderListView.apk?raw=true";
+                    OkHttpClient okHttpClient = new OkHttpClient();
+                    Call call = okHttpClient.newCall(new Request.Builder().url(url).build());
+                    Response response = call.execute();
+                    if (response.isSuccessful()) {
+                        saveApkFile(response);
+                    } else {
+                        sendMsg("下载失败");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        });
+        }).start();
     }
 
     private void saveApkFile(Response response) throws Exception {
@@ -185,7 +182,13 @@ public class MainActivity extends AppCompatActivity {
         fos.flush();
         is.close();
         fos.close();
-        ApkUtil.install(getApplicationContext(), apkFile.getPath());
+        ApkUtil.install(getApplicationContext(), apkFile.getAbsolutePath());
+    }
+
+    private void sendMsg(String tip) {
+        Message msg = mHandler.obtainMessage();
+        msg.obj = tip;
+        mHandler.sendMessage(msg);
     }
 
     private void sendMsg(int size, String tip) {

@@ -11,10 +11,9 @@ import android.net.Uri;
 public class ApkUtil {
 
     public static void install(Context context, String apkPath){
-        Intent intent = new Intent();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(apkPath), "application/vnd.android.package-archive");
+        intent.setDataAndType(Uri.parse("file://"+apkPath), "application/vnd.android.package-archive");
         context.startActivity(intent);
     }
 }
